@@ -18,9 +18,9 @@ import org.hibernate.annotations.CreationTimestamp;
 public class Etudiant extends Utilisateur {
 
     @Column(unique = true)
-    private String matricule;   // ex: ETU-2025-00001
+    private String matricule;
 
-    @CreationTimestamp          // 🔥 auto à l’insertion
-    @Column(updatable = false)  // jamais modifiée après
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime dateInscription;
 }
