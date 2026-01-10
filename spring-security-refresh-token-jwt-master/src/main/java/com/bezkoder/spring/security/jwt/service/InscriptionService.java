@@ -7,6 +7,7 @@ import com.bezkoder.spring.security.jwt.models.StatutInscription;
 import com.bezkoder.spring.security.jwt.repository.EtudiantRepository;
 import com.bezkoder.spring.security.jwt.repository.GroupeRepository;
 import com.bezkoder.spring.security.jwt.repository.InscriptionRepository;
+import com.bezkoder.spring.security.jwt.specification.InscriptionSpecification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 public class InscriptionService {
@@ -34,6 +35,9 @@ public class InscriptionService {
         this.groupeRepository = groupeRepository;
     }
 
+    // =========================
+    // CREATE
+    // =========================
     public Inscription inscrireEtudiant(Long etudiantId, Long groupeId) {
 
         if (inscriptionRepository.existsByEtudiantIdAndGroupeId(etudiantId, groupeId)) {
@@ -55,7 +59,9 @@ public class InscriptionService {
         return inscriptionRepository.save(inscription);
     }
 
-    // ✅ ADMIN : valider / refuser
+    // =========================
+    // UPDATE : STATUT
+    // =========================
     public Inscription changerStatut(Long inscriptionId, StatutInscription statut) {
 
         Inscription inscription = inscriptionRepository.findById(inscriptionId)
@@ -65,20 +71,46 @@ public class InscriptionService {
         return inscriptionRepository.save(inscription);
     }
 
-    // 📋 inscriptions d’un groupe
+    // =========================
+    // READ : PAR GROUPE
+    // =========================
     public List<Inscription> getByGroupe(Long groupeId) {
         return inscriptionRepository.findByGroupeId(groupeId);
     }
 
-    // 📋 inscriptions d’un étudiant
+    // =========================
+    // READ : PAR ÉTUDIANT
+    // =========================
     public List<Inscription> getByEtudiant(Long etudiantId) {
         return inscriptionRepository.findByEtudiantId(etudiantId);
     }
 
-    // 📋 ADMIN : toutes les inscriptions avec pagination
+    // =========================
+    // READ : PAGINATION SIMPLE
+    // =========================
     public Page<Inscription> getAllPaginated(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return inscriptionRepository.findAll(pageable);
     }
 
+    // =========================
+    // READ : FILTRÉ + PAGINÉ
+    // =========================
+    public Page<Inscription> getAllFiltered(
+            String etudiant,
+            StatutInscription statut,
+            String groupe,
+            int page,
+            int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Specification<Inscription> spec = InscriptionSpecification.withFilters(
+                etudiant,
+                statut,
+                groupe
+        );
+
+        return inscriptionRepository.findAll(spec, pageable);
+    }
 }

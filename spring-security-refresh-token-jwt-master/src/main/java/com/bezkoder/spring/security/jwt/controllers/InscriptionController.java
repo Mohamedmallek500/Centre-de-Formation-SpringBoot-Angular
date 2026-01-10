@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 
 @RestController
@@ -22,7 +21,9 @@ public class InscriptionController {
         this.inscriptionService = inscriptionService;
     }
 
-    // 🔹 Inscrire étudiant à un groupe
+    // =========================
+    // CREATE
+    // =========================
     @PostMapping
     public ResponseEntity<Inscription> inscrire(
             @RequestBody InscriptionRequest request
@@ -35,7 +36,9 @@ public class InscriptionController {
         );
     }
 
-    // 🔹 ADMIN : valider / refuser
+    // =========================
+    // UPDATE : STATUT
+    // =========================
     @PutMapping("/{id}/statut")
     public ResponseEntity<Inscription> changerStatut(
             @PathVariable Long id,
@@ -46,7 +49,9 @@ public class InscriptionController {
         );
     }
 
-    // 🔹 Lister inscriptions d’un groupe
+    // =========================
+    // READ : PAR GROUPE
+    // =========================
     @GetMapping("/groupe/{groupeId}")
     public ResponseEntity<List<Inscription>> getByGroupe(
             @PathVariable Long groupeId
@@ -56,7 +61,9 @@ public class InscriptionController {
         );
     }
 
-    // 🔹 Lister inscriptions d’un étudiant
+    // =========================
+    // READ : PAR ÉTUDIANT
+    // =========================
     @GetMapping("/etudiant/{etudiantId}")
     public ResponseEntity<List<Inscription>> getByEtudiant(
             @PathVariable Long etudiantId
@@ -66,15 +73,25 @@ public class InscriptionController {
         );
     }
 
-    // 🔹 ADMIN : Lister toutes les inscriptions avec pagination (12 par page)
+    // =========================
+    // READ : FILTRÉ + PAGINÉ (ADMIN)
+    // =========================
     @GetMapping
     public ResponseEntity<Page<Inscription>> getAllPaginated(
+            @RequestParam(required = false) String etudiant,
+            @RequestParam(required = false) StatutInscription statut,
+            @RequestParam(required = false) String groupe,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size
     ) {
         return ResponseEntity.ok(
-                inscriptionService.getAllPaginated(page, size)
+                inscriptionService.getAllFiltered(
+                        etudiant,
+                        statut,
+                        groupe,
+                        page,
+                        size
+                )
         );
     }
-
 }
