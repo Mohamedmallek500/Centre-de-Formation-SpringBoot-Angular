@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 @RestController
 @RequestMapping("/api/inscriptions")
 @CrossOrigin(origins = "*")
@@ -63,4 +65,16 @@ public class InscriptionController {
                 inscriptionService.getByEtudiant(etudiantId)
         );
     }
+
+    // 🔹 ADMIN : Lister toutes les inscriptions avec pagination (12 par page)
+    @GetMapping
+    public ResponseEntity<Page<Inscription>> getAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size
+    ) {
+        return ResponseEntity.ok(
+                inscriptionService.getAllPaginated(page, size)
+        );
+    }
+
 }

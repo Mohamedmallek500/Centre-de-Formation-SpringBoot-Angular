@@ -36,7 +36,7 @@ import com.bezkoder.spring.security.jwt.security.services.UserDetailsImpl;
 import com.bezkoder.spring.security.jwt.service.EtudiantService;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:5174",    allowCredentials = "true", maxAge = 3600)
 @RequestMapping("/api/auth")
 public class AuthController {
 

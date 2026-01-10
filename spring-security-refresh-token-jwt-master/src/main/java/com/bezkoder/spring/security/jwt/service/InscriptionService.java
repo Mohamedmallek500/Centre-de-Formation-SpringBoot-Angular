@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+
 @Service
 public class InscriptionService {
 
@@ -69,4 +74,11 @@ public class InscriptionService {
     public List<Inscription> getByEtudiant(Long etudiantId) {
         return inscriptionRepository.findByEtudiantId(etudiantId);
     }
+
+    // 📋 ADMIN : toutes les inscriptions avec pagination
+    public Page<Inscription> getAllPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return inscriptionRepository.findAll(pageable);
+    }
+
 }
